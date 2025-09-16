@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import Layout from "./components/Layout";
 import UploadPage from "./pages/UploadPage";
-import Transcript from "./pages/Transcript";
+import TranscriptPage from "./pages/TranscriptPage";
 
 /**
  * App entry renders the top navigation and page views.
@@ -21,7 +21,7 @@ function App() {
       case "upload":
         return <UploadPage />;
       case "transcript":
-        return <Transcript />;
+        return <TranscriptPage />;
       default:
         return <UploadPage />;
     }
