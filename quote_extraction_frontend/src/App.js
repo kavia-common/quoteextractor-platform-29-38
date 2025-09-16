@@ -3,6 +3,7 @@ import "./App.css";
 import Layout from "./components/Layout";
 import UploadPage from "./pages/UploadPage";
 import TranscriptPage from "./pages/TranscriptPage";
+import QuotesPage from "./pages/QuotesPage";
 
 /**
  * App entry renders the top navigation and page views.
@@ -22,6 +23,8 @@ function App() {
         return <UploadPage />;
       case "transcript":
         return <TranscriptPage />;
+      case "quotes":
+        return <QuotesPage />;
       default:
         return <UploadPage />;
     }
