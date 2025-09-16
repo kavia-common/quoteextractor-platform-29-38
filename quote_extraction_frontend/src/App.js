@@ -6,11 +6,14 @@ import UploadPage from "./pages/UploadPage";
 import TranscriptPage from "./pages/TranscriptPage";
 import QuotesPage from "./pages/QuotesPage";
 import ExportPage from "./pages/ExportPage";
+import CopilotButton from "./components/CopilotButton";
+import CopilotSidebar from "./components/CopilotSidebar";
 import { healthCheck } from "./api/client";
 
 // Wrapper to handle navigation through Layout
 function PageWrapper({ children }) {
   const [theme, setTheme] = useState("light");
+  const [copilotOpen, setCopilotOpen] = useState(false);
   const navigate = useNavigate();
 
   const getCurrentSection = () => {
@@ -30,23 +33,46 @@ function PageWrapper({ children }) {
     healthCheck().catch(console.warn);
   }, []);
 
+  // Handle escape key to close copilot
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && copilotOpen) {
+        setCopilotOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [copilotOpen]);
+
   return (
-    <Layout
-      current={getCurrentSection()}
-      onNavigate={(section) => {
-        const paths = {
-          upload: "/",
-          transcript: "/transcript",
-          quotes: "/quotes",
-          export: "/export",
-        };
-        navigate(paths[section] || "/");
-      }}
-      onToggleTheme={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
-      theme={theme}
-    >
-      {children}
-    </Layout>
+    <>
+      <Layout
+        current={getCurrentSection()}
+        onNavigate={(section) => {
+          const paths = {
+            upload: "/",
+            transcript: "/transcript",
+            quotes: "/quotes",
+            export: "/export",
+          };
+          navigate(paths[section] || "/");
+        }}
+        onToggleTheme={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
+        theme={theme}
+      >
+        {children}
+      </Layout>
+      
+      {/* Copilot Components */}
+      <CopilotButton 
+        onClick={() => setCopilotOpen(!copilotOpen)}
+        isOpen={copilotOpen}
+      />
+      <CopilotSidebar 
+        isOpen={copilotOpen}
+        onClose={() => setCopilotOpen(false)}
+      />
+    </>
   );
 }
 
