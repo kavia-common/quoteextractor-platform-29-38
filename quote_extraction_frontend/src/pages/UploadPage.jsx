@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../App.css";
-import Layout from "../components/Layout";
 import UploadForm from "../components/UploadForm";
 import { getUploadStatus } from "../api/client";
 
@@ -10,18 +9,14 @@ import { getUploadStatus } from "../api/client";
  * - Progress and status feedback
  * - Polling backend for processing status once uploaded
  * - Integrated modern styling
+ *
+ * Note: Layout, navigation, and theme are managed by App.js. This page renders core content only.
  */
 export default function UploadPage() {
-  const [theme, setTheme] = useState("light");
-  const [current, setCurrent] = useState("upload");
   const [assetId, setAssetId] = useState(null);
   const [statusInfo, setStatusInfo] = useState(null);
   const [polling, setPolling] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
 
   // Poll for status after we have an assetId
   useEffect(() => {
@@ -88,80 +83,73 @@ export default function UploadPage() {
   }, [statusInfo]);
 
   return (
-    <Layout
-      current={current}
-      onNavigate={setCurrent}
-      onToggleTheme={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
-      theme={theme}
-    >
-      <section style={heroWrapStyle}>
-        <div style={heroGlowStyle} aria-hidden="true" />
-        <div style={heroCardStyle}>
-          <div style={eyebrowStyle}>Media Ingestion</div>
-          <h1 style={heroTitleStyle}>Upload audio & video to extract standout quotes</h1>
-          <p style={heroSubtitleStyle}>
-            Drag and drop files or browse from your computer. We’ll transcribe and prepare your content for quote extraction, editing, and export.
-          </p>
-          <UploadForm
-            onUploaded={(r) => {
-              setError("");
-              setStatusInfo(null);
-              setAssetId(r.asset_id);
-            }}
-            onError={(msg) => {
-              setError(msg);
-            }}
-          />
-          {assetId && (
-            <div style={statusPanelStyle} role="status" aria-live="polite">
-              <div style={statusHeaderStyle}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontWeight: 700, letterSpacing: 0.3 }}>Processing Status</span>
-                  {statusBadge}
-                </div>
-                <div style={{ fontSize: 12, opacity: 0.8 }}>
-                  Asset ID: <code>{assetId}</code>
-                </div>
+    <section style={heroWrapStyle}>
+      <div style={heroGlowStyle} aria-hidden="true" />
+      <div style={heroCardStyle}>
+        <div style={eyebrowStyle}>Media Ingestion</div>
+        <h1 style={heroTitleStyle}>Upload audio & video to extract standout quotes</h1>
+        <p style={heroSubtitleStyle}>
+          Drag and drop files or browse from your computer. We’ll transcribe and prepare your content for quote extraction, editing, and export.
+        </p>
+        <UploadForm
+          onUploaded={(r) => {
+            setError("");
+            setStatusInfo(null);
+            setAssetId(r.asset_id);
+          }}
+          onError={(msg) => {
+            setError(msg);
+          }}
+        />
+        {assetId && (
+          <div style={statusPanelStyle} role="status" aria-live="polite">
+            <div style={statusHeaderStyle}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontWeight: 700, letterSpacing: 0.3 }}>Processing Status</span>
+                {statusBadge}
               </div>
-              <div style={{ marginTop: 10 }}>
-                {polling && (
-                  <div style={progressWrap}>
-                    <div style={progressBar} />
-                  </div>
+              <div style={{ fontSize: 12, opacity: 0.8 }}>
+                Asset ID: <code>{assetId}</code>
+              </div>
+            </div>
+            <div style={{ marginTop: 10 }}>
+              {polling && (
+                <div style={progressWrap}>
+                  <div style={progressBar} />
+                </div>
+              )}
+              <ul style={statusListStyle}>
+                <li>
+                  Updated:{" "}
+                  <span style={{ opacity: 0.9 }}>
+                    {statusInfo?.updated_at ? new Date(statusInfo.updated_at).toLocaleString() : "—"}
+                  </span>
+                </li>
+                <li>
+                  Transcript ID:{" "}
+                  <span style={{ opacity: 0.9 }}>
+                    {statusInfo?.transcript_id || "Not available yet"}
+                  </span>
+                </li>
+                {statusInfo?.message && (
+                  <li>
+                    Message: <span style={{ opacity: 0.9 }}>{statusInfo.message}</span>
+                  </li>
                 )}
-                <ul style={statusListStyle}>
-                  <li>
-                    Updated:{" "}
-                    <span style={{ opacity: 0.9 }}>
-                      {statusInfo?.updated_at ? new Date(statusInfo.updated_at).toLocaleString() : "—"}
-                    </span>
-                  </li>
-                  <li>
-                    Transcript ID:{" "}
-                    <span style={{ opacity: 0.9 }}>
-                      {statusInfo?.transcript_id || "Not available yet"}
-                    </span>
-                  </li>
-                  {statusInfo?.message && (
-                    <li>
-                      Message: <span style={{ opacity: 0.9 }}>{statusInfo.message}</span>
-                    </li>
-                  )}
-                </ul>
-              </div>
+              </ul>
             </div>
-          )}
-          {!!error && (
-            <div role="alert" style={errorStyle}>
-              {error}
-            </div>
-          )}
-          <div style={tipsStyle}>
-            Pro tip: Large files may take a while. You can keep this tab open—status updates in real time.
           </div>
+        )}
+        {!!error && (
+          <div role="alert" style={errorStyle}>
+            {error}
+          </div>
+        )}
+        <div style={tipsStyle}>
+          Pro tip: Large files may take a while. You can keep this tab open—status updates in real time.
         </div>
-      </section>
-    </Layout>
+      </div>
+    </section>
   );
 }
 

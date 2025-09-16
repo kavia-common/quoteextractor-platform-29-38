@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import "../App.css";
-import Layout from "../components/Layout";
 import TranscriptEditor from "../components/TranscriptEditor";
 import {
   getTranscript,
@@ -19,9 +18,6 @@ import {
  * - Maintain the modern style established on the Upload page
  */
 export default function TranscriptPage() {
-  const [theme, setTheme] = useState("light");
-  const [current, setCurrent] = useState("transcript");
-
   const [transcripts, setTranscripts] = useState([]);
   const [selectedId, setSelectedId] = useState("");
   const [transcript, setTranscript] = useState(null);
@@ -32,11 +28,7 @@ export default function TranscriptPage() {
   const [error, setError] = useState("");
   const [flash, setFlash] = useState("");
 
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
-
-  useEffect(() => {
+  React.useEffect(() => {
     let active = true;
     (async () => {
       setLoadingList(true);
@@ -61,7 +53,7 @@ export default function TranscriptPage() {
     };
   }, []); // load once
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!selectedId) {
       setTranscript(null);
       return;
@@ -161,77 +153,70 @@ export default function TranscriptPage() {
   }, [transcript?.status]);
 
   return (
-    <Layout
-      current={current}
-      onNavigate={setCurrent}
-      onToggleTheme={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
-      theme={theme}
-    >
-      <section style={heroWrapStyle}>
-        <div style={heroGlowStyle} aria-hidden="true" />
-        <div style={heroCardStyle}>
-          <div style={eyebrowStyle}>Review</div>
-          <h1 style={heroTitleStyle}>Refine your transcript and pull standout quotes</h1>
-          <p style={heroSubtitleStyle}>
-            Edit the transcript inline, manage segments, and start extracting quotes in a single flow.
-          </p>
+    <section style={heroWrapStyle}>
+      <div style={heroGlowStyle} aria-hidden="true" />
+      <div style={heroCardStyle}>
+        <div style={eyebrowStyle}>Review</div>
+        <h1 style={heroTitleStyle}>Refine your transcript and pull standout quotes</h1>
+        <p style={heroSubtitleStyle}>
+          Edit the transcript inline, manage segments, and start extracting quotes in a single flow.
+        </p>
 
-          <div style={toolbar}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <label htmlFor="transcript-select" style={{ fontSize: 12, opacity: 0.8 }}>
-                Transcript
-              </label>
-              <select
-                id="transcript-select"
-                value={selectedId}
-                onChange={(e) => setSelectedId(e.target.value)}
-                disabled={loadingList}
-                style={selectStyle}
-              >
-                {!transcripts?.length && <option value="">No transcripts</option>}
-                {transcripts?.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.id} {t.language ? `(${t.language})` : ""}
-                  </option>
-                ))}
-              </select>
-              {headerBadge}
-            </div>
-            <div style={{ fontSize: 12, opacity: 0.8 }}>
-              {transcript?.asset_id && (
-                <>
-                  Asset: <code>{transcript.asset_id}</code>
-                </>
-              )}
-            </div>
+        <div style={toolbar}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <label htmlFor="transcript-select" style={{ fontSize: 12, opacity: 0.8 }}>
+              Transcript
+            </label>
+            <select
+              id="transcript-select"
+              value={selectedId}
+              onChange={(e) => setSelectedId(e.target.value)}
+              disabled={loadingList}
+              style={selectStyle}
+            >
+              {!transcripts?.length && <option value="">No transcripts</option>}
+              {transcripts?.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.id} {t.language ? `(${t.language})` : ""}
+                </option>
+              ))}
+            </select>
+            {headerBadge}
           </div>
-
-          {loadingTranscript && <div style={loadingBox}>Loading transcript…</div>}
-
-          {transcript && !loadingTranscript && (
-            <TranscriptEditor
-              transcript={transcript}
-              onChange={(txt) => setTranscript((prev) => ({ ...(prev || {}), text: txt }))}
-              onSave={onSave}
-              saving={saving}
-              onExtractQuotes={onExtractQuotes}
-              error={error}
-            />
-          )}
-
-          {!!error && !transcript && (
-            <div role="alert" style={errorStyle}>
-              {error}
-            </div>
-          )}
-          {!!flash && (
-            <div role="status" style={flashStyle} aria-live="polite">
-              {flash}
-            </div>
-          )}
+          <div style={{ fontSize: 12, opacity: 0.8 }}>
+            {transcript?.asset_id && (
+              <>
+                Asset: <code>{transcript.asset_id}</code>
+              </>
+            )}
+          </div>
         </div>
-      </section>
-    </Layout>
+
+        {loadingTranscript && <div style={loadingBox}>Loading transcript…</div>}
+
+        {transcript && !loadingTranscript && (
+          <TranscriptEditor
+            transcript={transcript}
+            onChange={(txt) => setTranscript((prev) => ({ ...(prev || {}), text: txt }))}
+            onSave={onSave}
+            saving={saving}
+            onExtractQuotes={onExtractQuotes}
+            error={error}
+          />
+        )}
+
+        {!!error && !transcript && (
+          <div role="alert" style={errorStyle}>
+            {error}
+          </div>
+        )}
+        {!!flash && (
+          <div role="status" style={flashStyle} aria-live="polite">
+            {flash}
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
 

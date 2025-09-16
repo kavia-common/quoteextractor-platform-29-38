@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../App.css";
-import Layout from "../components/Layout";
 import { listQuotes, updateQuote } from "../api/client";
 import QuoteFilters from "../components/QuoteFilters";
 import QuoteList from "../components/QuoteList";
@@ -15,9 +14,6 @@ import QuoteList from "../components/QuoteList";
  * - Subtle loading/error states and badges
  */
 export default function QuotesPage() {
-  const [theme, setTheme] = useState("light");
-  const [current, setCurrent] = useState("quotes");
-
   // Filters
   const [status, setStatus] = useState("all"); // 'all' | 'approved' | 'pending'
   const [minConf, setMinConf] = useState(0);
@@ -27,10 +23,6 @@ export default function QuotesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [quotes, setQuotes] = useState([]);
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
 
   // Fetch quotes when server-facing filters change (status, minConfidence)
   const fetchQuotes = async () => {
@@ -91,49 +83,42 @@ export default function QuotesPage() {
   };
 
   return (
-    <Layout
-      current={current}
-      onNavigate={setCurrent}
-      onToggleTheme={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
-      theme={theme}
-    >
-      <section style={heroWrapStyle}>
-        <div style={heroGlowStyle} aria-hidden="true" />
-        <div style={heroCardStyle}>
-          <div style={eyebrowStyle}>Curation</div>
-          <h1 style={heroTitleStyle}>Review and curate standout quotes</h1>
-          <p style={heroSubtitleStyle}>
-            Filter by status, confidence, and tags. Approve or reject quickly to prepare for export.
-          </p>
+    <section style={heroWrapStyle}>
+      <div style={heroGlowStyle} aria-hidden="true" />
+      <div style={heroCardStyle}>
+        <div style={eyebrowStyle}>Curation</div>
+        <h1 style={heroTitleStyle}>Review and curate standout quotes</h1>
+        <p style={heroSubtitleStyle}>
+          Filter by status, confidence, and tags. Approve or reject quickly to prepare for export.
+        </p>
 
-          <QuoteFilters
-            status={status}
-            onStatusChange={setStatus}
-            minConfidence={minConf}
-            onMinConfidenceChange={setMinConf}
-            tagQuery={tagQuery}
-            onTagQueryChange={setTagQuery}
-            onRefresh={fetchQuotes}
-            loading={loading}
-          />
+        <QuoteFilters
+          status={status}
+          onStatusChange={setStatus}
+          minConfidence={minConf}
+          onMinConfidenceChange={setMinConf}
+          tagQuery={tagQuery}
+          onTagQueryChange={setTagQuery}
+          onRefresh={fetchQuotes}
+          loading={loading}
+        />
 
-          {loading && <div style={loadingBox}>Loading quotes…</div>}
-          {!!error && (
-            <div role="alert" style={errorStyle}>
-              {error}
-            </div>
-          )}
-
-          {!loading && !error && (
-            <QuoteList quotes={filteredQuotes} onApprove={onApprove} onReject={onReject} />
-          )}
-
-          <div style={tipsStyle}>
-            Tip: Use tags like “product”, “vision”, or “funny” to organize your quotes for specific channels.
+        {loading && <div style={loadingBox}>Loading quotes…</div>}
+        {!!error && (
+          <div role="alert" style={errorStyle}>
+            {error}
           </div>
+        )}
+
+        {!loading && !error && (
+          <QuoteList quotes={filteredQuotes} onApprove={onApprove} onReject={onReject} />
+        )}
+
+        <div style={tipsStyle}>
+          Tip: Use tags like "product", "vision", or "funny" to organize your quotes for specific channels.
         </div>
-      </section>
-    </Layout>
+      </div>
+    </section>
   );
 }
 
