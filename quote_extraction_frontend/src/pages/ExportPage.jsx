@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../App.css";
-import Layout from "../components/Layout";
 import ExportForm from "../components/ExportForm";
 import ExportResult from "../components/ExportResult";
 import { createExportJob, getExportJob, listQuotes } from "../api/client";
@@ -14,9 +13,6 @@ import { createExportJob, getExportJob, listQuotes } from "../api/client";
  * - Provide animated status and rich result previews
  */
 export default function ExportPage() {
-  const [theme, setTheme] = useState("light");
-  const [current, setCurrent] = useState("export");
-
   // Quotes and selection
   const [quotes, setQuotes] = useState([]);
   const [loadingQuotes, setLoadingQuotes] = useState(true);
@@ -26,10 +22,6 @@ export default function ExportPage() {
   const [submitting, setSubmitting] = useState(false);
   const [job, setJob] = useState(null);
   const [jobError, setJobError] = useState("");
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
 
   // Load approved quotes for selection
   useEffect(() => {
@@ -91,62 +83,55 @@ export default function ExportPage() {
   const hasQuotes = useMemo(() => quotes && quotes.length > 0, [quotes]);
 
   return (
-    <Layout
-      current={current}
-      onNavigate={setCurrent}
-      onToggleTheme={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
-      theme={theme}
-    >
-      <section style={heroWrapStyle}>
-        <div style={heroGlowStyle} aria-hidden="true" />
-        <div style={heroCardStyle}>
-          <div style={eyebrowStyle}>Distribute</div>
-          <h1 style={heroTitleStyle}>Export curated quotes for your channels</h1>
-          <p style={heroSubtitleStyle}>
-            Choose format and platform styling, pick approved quotes, and generate polished output ready
-            for social posts, blogs, or captions.
-          </p>
+    <section style={heroWrapStyle}>
+      <div style={heroGlowStyle} aria-hidden="true" />
+      <div style={heroCardStyle}>
+        <div style={eyebrowStyle}>Distribute</div>
+        <h1 style={heroTitleStyle}>Export curated quotes for your channels</h1>
+        <p style={heroSubtitleStyle}>
+          Choose format and platform styling, pick approved quotes, and generate polished output ready
+          for social posts, blogs, or captions.
+        </p>
 
-          <div style={grid}>
-            <div style={leftCol}>
-              <h3 style={panelTitle}>Export Options</h3>
-              {loadingQuotes && <div style={loadingBox}>Loading approved quotes…</div>}
-              {!!quotesError && (
-                <div role="alert" style={errorStyle}>
-                  {quotesError}
-                </div>
-              )}
-              {!loadingQuotes && !quotesError && (
-                <ExportForm
-                  quotes={quotes}
-                  disabled={!hasQuotes || submitting}
-                  onSubmit={onSubmitExport}
-                />
-              )}
-              {!hasQuotes && !loadingQuotes && !quotesError && (
-                <div style={hintBox}>
-                  No approved quotes found. Approve quotes on the Quotes tab to enable exporting.
-                </div>
-              )}
-            </div>
-
-            <div style={rightCol}>
-              <h3 style={panelTitle}>Result</h3>
-              <ExportResult
-                job={job}
-                submitting={submitting}
-                error={jobError}
-                onRefresh={refreshJob}
+        <div style={grid}>
+          <div style={leftCol}>
+            <h3 style={panelTitle}>Export Options</h3>
+            {loadingQuotes && <div style={loadingBox}>Loading approved quotes…</div>}
+            {!!quotesError && (
+              <div role="alert" style={errorStyle}>
+                {quotesError}
+              </div>
+            )}
+            {!loadingQuotes && !quotesError && (
+              <ExportForm
+                quotes={quotes}
+                disabled={!hasQuotes || submitting}
+                onSubmit={onSubmitExport}
               />
-            </div>
+            )}
+            {!hasQuotes && !loadingQuotes && !quotesError && (
+              <div style={hintBox}>
+                No approved quotes found. Approve quotes on the Quotes tab to enable exporting.
+              </div>
+            )}
           </div>
 
-          <div style={tipsStyle}>
-            Tip: For social platforms, keep each quote concise and add tags in the post body for reach.
+          <div style={rightCol}>
+            <h3 style={panelTitle}>Result</h3>
+            <ExportResult
+              job={job}
+              submitting={submitting}
+              error={jobError}
+              onRefresh={refreshJob}
+            />
           </div>
         </div>
-      </section>
-    </Layout>
+
+        <div style={tipsStyle}>
+          Tip: For social platforms, keep each quote concise and add tags in the post body for reach.
+        </div>
+      </div>
+    </section>
   );
 }
 
