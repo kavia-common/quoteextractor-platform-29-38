@@ -151,11 +151,18 @@ export default function ExportForm({ quotes = [], disabled = false, onSubmit }) 
               style={{ marginRight: 8 }}
             />
             <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", minWidth: 0 }}>
                 <span style={chipTime}>{formatTime(q.start)} - {formatTime(q.end)}</span>
                 {typeof q.confidence === "number" && <span style={chipSmall}>Conf: {q.confidence.toFixed(2)}</span>}
                 {q.tags?.length ? (
-                  <span style={{ ...chipSmall, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 180 }}>
+                  <span style={{ 
+                    ...chipSmall, 
+                    whiteSpace: "nowrap", 
+                    overflow: "hidden", 
+                    textOverflow: "ellipsis", 
+                    maxWidth: "150px",
+                    flex: "0 1 auto"
+                  }}>
                     {q.tags.slice(0, 3).map((t) => `#${t}`).join(" ")}
                     {q.tags.length > 3 ? " …" : ""}
                   </span>
@@ -257,6 +264,8 @@ const quoteItem = {
   background: "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03))",
   borderRadius: 10,
   padding: 10,
+  minWidth: 0,
+  overflow: "hidden",
 };
 
 const emptyBox = {

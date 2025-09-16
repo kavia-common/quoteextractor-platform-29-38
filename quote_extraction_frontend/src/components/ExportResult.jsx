@@ -258,6 +258,8 @@ const wrap = {
   flexDirection: "column",
   gap: 10,
   minHeight: 180,
+  minWidth: 0,
+  overflow: "hidden",
 };
 
 const placeholder = {
@@ -313,6 +315,8 @@ const metaList = {
   margin: "6px 0 0",
   paddingLeft: 18,
   lineHeight: 1.7,
+  wordBreak: "break-word",
+  overflow: "hidden",
 };
 
 const loadingBox = {
@@ -397,14 +401,21 @@ const btnDisabled = {
   cursor: "not-allowed",
 };
 
-// Inject keyframes for progress bar
+// Inject keyframes for progress bar and layout fixes
 if (typeof document !== "undefined") {
-  const styleTag = document.createElement("style");
-  styleTag.innerHTML = `
+  const existingStyle = document.querySelector("#export-result-styles");
+  if (!existingStyle) {
+    const styleTag = document.createElement("style");
+    styleTag.id = "export-result-styles";
+    styleTag.innerHTML = `
 @keyframes progress-pulse {
   from { transform: translateX(-25%); opacity: 0.7; }
   to { transform: translateX(85%); opacity: 1; }
 }
+* {
+  box-sizing: border-box;
+}
 `;
-  document.head.appendChild(styleTag);
+    document.head.appendChild(styleTag);
+  }
 }

@@ -85,7 +85,7 @@ export default function ExportPage() {
   return (
     <section style={heroWrapStyle}>
       <div style={heroGlowStyle} aria-hidden="true" />
-      <div style={heroCardStyle}>
+      <div style={heroCardStyle} className="export-hero-card">
         <div style={eyebrowStyle}>Distribute</div>
         <h1 style={heroTitleStyle}>Export curated quotes for your channels</h1>
         <p style={heroSubtitleStyle}>
@@ -93,7 +93,7 @@ export default function ExportPage() {
           for social posts, blogs, or captions.
         </p>
 
-        <div style={grid}>
+        <div style={grid} className="export-grid">
           <div style={leftCol}>
             <h3 style={panelTitle}>Export Options</h3>
             {loadingQuotes && <div style={loadingBox}>Loading approved quotes…</div>}
@@ -156,6 +156,8 @@ const heroCardStyle = {
   borderRadius: 16,
   padding: 24,
   boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+  maxWidth: "100%",
+  overflow: "hidden",
 };
 
 const eyebrowStyle = {
@@ -185,6 +187,9 @@ const grid = {
   display: "grid",
   gridTemplateColumns: "1.2fr 1fr",
   gap: 14,
+  "@media (max-width: 1024px)": {
+    gridTemplateColumns: "1fr",
+  },
 };
 
 const leftCol = {
@@ -192,6 +197,8 @@ const leftCol = {
   background: "var(--bg-secondary)",
   borderRadius: 14,
   padding: 12,
+  minWidth: 0,
+  overflow: "hidden",
 };
 
 const rightCol = {
@@ -200,6 +207,8 @@ const rightCol = {
   borderRadius: 14,
   padding: 12,
   minHeight: 280,
+  minWidth: 0,
+  overflow: "hidden",
 };
 
 const panelTitle = {
@@ -238,3 +247,25 @@ const tipsStyle = {
   fontSize: 12,
   opacity: 0.7,
 };
+
+// Add responsive CSS for mobile layout
+if (typeof document !== "undefined") {
+  const existingStyle = document.querySelector("#export-page-responsive");
+  if (!existingStyle) {
+    const styleTag = document.createElement("style");
+    styleTag.id = "export-page-responsive";
+    styleTag.innerHTML = `
+@media (max-width: 1024px) {
+  .export-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 768px) {
+  .export-hero-card {
+    padding: 16px !important;
+  }
+}
+`;
+    document.head.appendChild(styleTag);
+  }
+}
