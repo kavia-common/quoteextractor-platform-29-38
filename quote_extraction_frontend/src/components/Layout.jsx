@@ -1,5 +1,6 @@
 import React from "react";
 import "../App.css";
+import { isMockMode } from "../api/mockData";
 
 /**
  * Layout component with a minimal top navigation bar.
@@ -49,6 +50,11 @@ export default function Layout({ current, onNavigate, onToggleTheme, theme, chil
           {theme === "light" ? "🌙 Dark" : "☀️ Light"}
         </button>
       </nav>
+      {isMockMode() && (
+        <div style={mockBannerStyle} role="alert">
+          ⚠️ Demo Mode: Using mock data (backend unavailable)
+        </div>
+      )}
       <main style={mainStyle}>{children}</main>
     </div>
   );
@@ -104,4 +110,13 @@ const mainStyle = {
   padding: "24px 16px",
   maxWidth: 1100,
   margin: "0 auto",
+};
+
+const mockBannerStyle = {
+  background: "linear-gradient(90deg, rgba(255,176,32,0.9), rgba(255,176,32,0.8))",
+  color: "#0b0b0b",
+  textAlign: "center",
+  padding: "8px 16px",
+  fontWeight: 700,
+  letterSpacing: 0.3,
 };
