@@ -69,7 +69,6 @@ async function tryWithMock(apiCall, mockData) {
     return await apiCall();
   } catch (error) {
     if (error.status === 0 || error.status === undefined || error.status === 404) {
-      console.warn("API unavailable, falling back to mock data", error);
       enableMockMode();
       return typeof mockData === "function" ? mockData() : mockData;
     }
